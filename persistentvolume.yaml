@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: lucassouza
+  name: project2-pv-lucassouza
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 1Gi
+storageClassName: standard
+accessModes:
+  - ReadWriteMany
+persistentVolumeReclaimPolicy: Recycle
+hostPath:
+  path: /home/lucassouza/project2-pv
