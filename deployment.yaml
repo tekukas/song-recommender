@@ -1,30 +1,52 @@
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: lucassouza
+  name: project2-pv-lucassouza
+  labels:
+    type: local
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: song-recommender-deployment
+  name: lucassouza-playlist-recommender-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: lucassouza-song-recommender
+      app: lucassouza-playlist-recommender
   template:
     metadata:
       labels:
-        app: lucassouza-song-recommender
+        app: lucassouza-playlist-recommender
     spec:
+      volumes:
+        - name: pvc-volume
+          persistentVolumeClaim:
+            claimName: project2-pv-lucassouza
       containers:
-      - name: lucassouza-song-recommender
-        image: zzzluquinhas/api_container:latest
-        volumeMounts:
-        - name: project2-pv-lucassouza
-          mountPath: /data
-        ports:
-        - containerPort: 32199
+      - name: recommender-api
+        image: docker.io/zzzluquinhas/api_container:latest
         env:
         - name: DATASET
           value: https://homepages.dcc.ufmg.br/~cunha/hosted/cloudcomp-2023s2-datasets/2023_spotify_ds1.csv
-      volumes:
-      - name: project2-pv-lucassouza
-        persistentVolumeClaim:
-          claimName: project2-pv-lucassouza
+        imagePullPolicy: Always
+        volumeMounts:
+            - name: pvc-volume
+              mountPath: app/shared
+        ports:
+        - containerPort: 32199
+      - name: recommender-model
+        image: docker.io/zzzluquinhas/model_container:latest
+        imagePullPolicy: Always
+        volumeMounts:
+            - name: pvc-volume
+              mountPath: app/shared
