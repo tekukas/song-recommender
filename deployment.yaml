@@ -45,7 +45,7 @@ spec:
         image: docker.io/zzzluquinhas/model_container:latest
         env:
         - name: DATASET
-          value: "https://homepages.dcc.ufmg.br/~cunha/hosted/cloudcomp-2023s2-datasets/2023_spotify_ds2.csv"
+          value: "https://homepages.dcc.ufmg.br/~cunha/hosted/cloudcomp-2023s2-datasets/2023_spotify_ds1.csv"
         imagePullPolicy: Always
         volumeMounts:
             - name: pvc-volume
